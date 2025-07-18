@@ -55,7 +55,9 @@ def train_gpt(client,training_file_id,validation_file_id,MODEL):
     print("Fine-tuned model ID:", fine_tuned_model_id)
 
 def main():
-    config_path = os.path.join(cwd,"PsychologyBot" ,"Config", "config.yaml")
+    cwd = os.getcwd()
+    cwd=cwd+"/PsychologyBot/Backend/ChatGptBot/"
+    config_path = os.path.join(cwd,"../../../","PsychologyBot" ,"Config", "config.yaml")
     config = yaml.safe_load(open(config_path))
     model=config['BackendChatGptConfigs']['Model']
     openai.api_key=os.environ.get('OPENAI_API_KEY')

@@ -11,3 +11,7 @@ BackendChatGptConfigs:
  FinalTrainingFileName: /PsychologyBot/Artifacts/ProcessedData/final_data_training.jsonl
  FinalValidationFileName: /PsychologyBot/Artifacts/ProcessedData/final_data_validation.jsonl
  Model: gpt-4o-mini-2024-07-18
+CommonConfig:
+ DataDir: /PsychologyBot/Data/
+ ModelDir: /PsychologyBot/Artifacts/Models/
+ ProcessedData: /PsychologyBot/Artifacts/Models/ProcessedData/
