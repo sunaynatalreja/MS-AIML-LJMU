@@ -16,9 +16,9 @@ def train_gpt(client,training_file_id,validation_file_id,MODEL):
         model=MODEL,
         suffix="psychologist",
         hyperparameters={
-        "n_epochs": 8,  # Increase for better learning
-        "batch_size": 32,  # Adjust based on dataset size
-        "learning_rate_multiplier": 5  # Lower to improve stability
+        "n_epochs": 8,
+        "batch_size": 32,  
+        "learning_rate_multiplier": 5  
         }
     )
 
@@ -32,7 +32,7 @@ def train_gpt(client,training_file_id,validation_file_id,MODEL):
     print("Job ID:", response.id)
     print("Status:", response.status)
     print("Trained Tokens:", response.trained_tokens)
-    #job_id='ftjob-VU1idsuZyqoxEkVy2EDnXi98'
+
     fine_tuned_model_id=None
     while fine_tuned_model_id==None:
         response = client.fine_tuning.jobs.list_events(job_id)

@@ -9,7 +9,7 @@ import joblib
 import yaml
 
 class GRUClassifier(nn.Module):
-    def __init__(self, input_size=126, hidden_size=64, num_classes=151):
+    def __init__(self, input_size=126, hidden_size=64, num_classes=26):
         super().__init__()
         self.gru1 = nn.GRU(input_size, hidden_size, batch_first=True, bidirectional=False)
         self.dropout1 = nn.Dropout(0.3)

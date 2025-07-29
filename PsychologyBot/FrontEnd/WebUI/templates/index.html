@@ -118,7 +118,7 @@
 
     <!-- Right Panel -->
     <div class="panel">
-      <video id="playVideo" muted autoplay playsinline controls></video>
+      <video id="playVideo" muted autoplay playsinline></video>
       <div id="botResponse" contenteditable="false"></div>
     </div>
   </div>
@@ -133,6 +133,11 @@
     const sendBtn = document.getElementById('sendBtn');
     const botResponse = document.getElementById('botResponse');
     const playVideo = document.getElementById('playVideo');
+
+    // Start with idle video
+    playVideo.src = '/static/videos/idle.mp4';
+    playVideo.loop = true;
+    playVideo.play();
 
     let collectedFrames = 0;
     const frameBuffer = [];
@@ -269,9 +274,22 @@
         }
       }
 
+      if (playQueue.length === 0) {
+        playVideo.src = '/static/videos/idle.mp4';
+        playVideo.loop = true;
+        playVideo.play();
+        return;
+      }
+
       let index = 0;
       const playNext = () => {
-        if (index >= playQueue.length) return;
+        if (index >= playQueue.length) {
+          playVideo.src = '/static/videos/idle.mp4';
+          playVideo.loop = true;
+          playVideo.play();
+          return;
+        }
+        playVideo.loop = false;
         playVideo.src = playQueue[index];
         playVideo.play().then(() => {
           playVideo.onended = () => {
