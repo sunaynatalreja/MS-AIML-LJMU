@@ -21,7 +21,7 @@ MAX_POOL_WORKERS = 25
 SKIP = ['even', 'odd']
 SPEED_COUNT = 15
 ORIGINAL_COUNT=1
-hands = mp_hands.Hands(static_image_mode=False, max_num_hands=2)
+mp_holistic = mp.solutions.holistic.Holistic(static_image_mode=True)
 
 def normalize_hand_kps_zscore(hand_kps):
     if np.all(hand_kps == 0):
@@ -104,18 +104,18 @@ def apply_augmentation(frame, aug_type):
 
 def get_key_points(frame):
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    hand_results = hands.process(rgb)
+    hand_results = mp_holistic.process(rgb)
+
     left_hand = np.zeros((21, 3))
     right_hand = np.zeros((21, 3))
 
-    if hand_results.multi_hand_landmarks and hand_results.multi_handedness:
-        for i in range(len(hand_results.multi_hand_landmarks)):
-            label = hand_results.multi_handedness[i].classification[0].label
-            hand_kp = np.array([[lm.x, lm.y, lm.z] for lm in hand_results.multi_hand_landmarks[i].landmark])
-            if label.lower() == 'left':
-                left_hand = normalize_hand_kps_zscore(hand_kp)
-            elif label.lower() == 'right':
-                right_hand = normalize_hand_kps_zscore(hand_kp)
+    if hand_results.left_hand_landmarks:
+        hand_kp = np.array([[lm.x, lm.y, lm.z] for lm in hand_results.left_hand_landmarks.landmark])
+        left_hand = normalize_hand_kps_zscore(hand_kp)
+        
+    if hand_results.right_hand_landmarks:
+        hand_kp = np.array([[lm.x, lm.y, lm.z] for lm in hand_results.right_hand_landmarks.landmark])
+        right_hand = normalize_hand_kps_zscore(hand_kp)
 
     return np.concatenate([left_hand, right_hand], axis=0)
 
