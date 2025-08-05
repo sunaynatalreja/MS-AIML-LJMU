@@ -1,1 +1,1 @@
-# MS-AIML-LJMU
+# Sign Language Psychology Bot
