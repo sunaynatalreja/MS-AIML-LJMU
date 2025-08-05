@@ -3,11 +3,12 @@ import mediapipe as mp
 import numpy as np
 import os
 import random
-from tqdm import tqdm
 from multiprocessing import Pool
 import yaml
 
 mp_hands = mp.solutions.hands
+hands = mp_hands.Hands(max_num_hands=2)
+
 cwd = os.getcwd()
 config_path = os.path.join(cwd,"PsychologyBot" ,"Config", "config.yaml")
 config = yaml.safe_load(open(config_path))
@@ -15,22 +16,20 @@ data_dir=cwd+config['CommonConfig']['DataDir']
 processed_data_dir=cwd+config['CommonConfig']['ProcessedData']
 VIDEO_DIR = data_dir+"generated_videos/"
 HAND_DIMS = 21 * 3 * 2
-MAX_FRAMES = 45
+MAX_FRAMES = 50
 AUGMENTATIONS = ['horizontal_flip_landmarks', 'brightness', 'contrast', 'saturation', 'grayscale','small_rotation','scale','translate']
 MAX_POOL_WORKERS = 25
 SKIP = ['even', 'odd']
 SPEED_COUNT = 15
 ORIGINAL_COUNT=1
-mp_holistic = mp.solutions.holistic.Holistic(static_image_mode=True)
 
-def normalize_hand_kps_zscore(hand_kps):
+def normalize_hand_kps(hand_kps):
     if np.all(hand_kps == 0):
         return hand_kps
-    centered = hand_kps - hand_kps[0]
-    mean = centered.mean(axis=0)  
-    std = centered.std(axis=0) + 1e-6  
-    normalized = (centered - mean) / std
-    return normalized
+    origin = hand_kps[0]
+    centered = hand_kps - origin
+    max_dist = np.linalg.norm(centered, axis=1).max()
+    return centered / (max_dist + 1e-6)
 
 def create_temp_speed_video(original_path, output_path, speed=1.0):
     cap = cv2.VideoCapture(original_path)
@@ -89,7 +88,6 @@ def apply_augmentation(frame, aug_type):
         scale = random.uniform(0.9, 1.1)
         h, w = frame.shape[:2]
         resized = cv2.resize(frame, None, fx=scale, fy=scale, interpolation=cv2.INTER_LINEAR)
-        # crop or pad to original size
         dh, dw = resized.shape[:2]
         top = max((dh - h) // 2, 0)
         left = max((dw - w) // 2, 0)
@@ -104,18 +102,18 @@ def apply_augmentation(frame, aug_type):
 
 def get_key_points(frame):
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    hand_results = mp_holistic.process(rgb)
-
+    hand_results = hands.process(rgb)
     left_hand = np.zeros((21, 3))
     right_hand = np.zeros((21, 3))
 
-    if hand_results.left_hand_landmarks:
-        hand_kp = np.array([[lm.x, lm.y, lm.z] for lm in hand_results.left_hand_landmarks.landmark])
-        left_hand = normalize_hand_kps_zscore(hand_kp)
-        
-    if hand_results.right_hand_landmarks:
-        hand_kp = np.array([[lm.x, lm.y, lm.z] for lm in hand_results.right_hand_landmarks.landmark])
-        right_hand = normalize_hand_kps_zscore(hand_kp)
+    if hand_results.multi_hand_landmarks and hand_results.multi_handedness:
+        for i in range(len(hand_results.multi_hand_landmarks)):
+            label = hand_results.multi_handedness[i].classification[0].label
+            hand_kp = np.array([[lm.x, lm.y, lm.z] for lm in hand_results.multi_hand_landmarks[i].landmark])
+            if label.lower() == 'left':
+                left_hand = normalize_hand_kps(hand_kp)
+            elif label.lower() == 'right':
+                right_hand = normalize_hand_kps(hand_kp)
 
     return np.concatenate([left_hand, right_hand], axis=0)
 

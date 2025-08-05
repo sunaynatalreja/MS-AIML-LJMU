@@ -69,12 +69,12 @@ def prepare_conversation_for_openai_preprocessing(row):
     return {'prompt': row['Context'], 'completion': row['Response']}
 
 def clean_text(text):
-    text = text.lower().strip()  # Lowercase for consistency
-    text = re.sub(r'\xa0+', ' ', text)  # Remove non-breaking spaces
-    text = re.sub(r'[-]{10,}', ' ', text)  # Remove long dashes
-    text = re.sub(r'\n+', ' ', text)  # Remove newlines
-    text = re.sub(r'\d{3}-\d{3}-\d{4}', '', text)  # Remove phone numbers
-    text = re.sub(r'\s+', ' ', text).strip()  # Remove extra spaces
+    text = text.lower().strip() 
+    text = re.sub(r'\xa0+', ' ', text) 
+    text = re.sub(r'[-]{10,}', ' ', text) 
+    text = re.sub(r'\n+', ' ', text) 
+    text = re.sub(r'\d{3}-\d{3}-\d{4}', '', text) 
+    text = re.sub(r'\s+', ' ', text).strip() 
     return text
 
 def expand_text(text):
@@ -82,14 +82,14 @@ def expand_text(text):
 
 async def translate_non_english(text):
     translator = Translator()
-    sentences = text.split(". ")  # Split into sentences
+    sentences = text.split(". ") 
     translated_text = []
     translation=""
     for sentence in sentences:  
-        lang = detect(sentence)  # Detect language
+        lang = detect(sentence)
         if lang != "en":
             translation = await translator.translate(sentence, src=lang, dest="en")
-            translation = expand_text(translation.text)  # Extract translated text
+            translation = expand_text(translation.text)
         translated_text.append(translation)
 
     return ". ".join(translated_text)
@@ -98,9 +98,7 @@ def csv_to_list_of_dicts(csv_file):
     data = []  
     translator = Translator()
     with open(csv_file, 'r') as file:
-        # Create a CSV reader object
         csv_reader = csv.DictReader(file)
-        # Iterate over each row in the CSV file
         for row in csv_reader: 
             if not (row['Response']=='' or row['Context']=='') and len(row['Response'])>1:
                 row['Response'] = expand_text(row['Response'])
@@ -112,7 +110,6 @@ def csv_to_list_of_dicts(csv_file):
                     translated_text = asyncio.run(translate_non_english(clean_text(row['Context'])))
                     row['Context'] = translated_text
                 data.append(prepare_conversation_for_openai_preprocessing(row))
-    # Return the list of dictionaries
     return data  
 
 def is_english(text):

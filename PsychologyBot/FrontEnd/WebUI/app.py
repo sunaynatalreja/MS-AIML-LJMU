@@ -7,7 +7,6 @@ import cv2
 from base64 import b64decode
 import numpy as np
 
-# Add path to the inference script
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SignLanguageDetection')))
 from inference import predict_from_frames
@@ -16,7 +15,6 @@ from flask_cors import CORS
 app = Flask(__name__,static_folder='static')
 CORS(app, resources={r"/static/*": {"origins": "*"}})
 
-# OpenAI API Key
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 @app.route('/')

@@ -10,7 +10,7 @@ def main():
     dataset_path=config['BackendChatGptConfigs']['ChatDataset']
     save_dir=config['BackendChatGptConfigs']['ChatDataSaveDir']
     downloaded_dataset=config['BackendChatGptConfigs']['ChatDatasetDownloadFile']
-    #Download Conversation Dataset
+
     dataset_name = "kaggle datasets download "+dataset_path
     save_dir = cwd+save_dir
     subprocess.call("mkdir "+save_dir,shell=True)

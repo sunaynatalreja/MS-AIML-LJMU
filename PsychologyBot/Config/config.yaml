@@ -14,4 +14,4 @@ BackendChatGptConfigs:
 CommonConfig:
  DataDir: /PsychologyBot/Data/
  ModelDir: /PsychologyBot/Artifacts/Models/
- ProcessedData: /PsychologyBot/Artifacts/Models/ProcessedData/
+ ProcessedData: /PsychologyBot/Artifacts/ProcessedData/

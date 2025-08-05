@@ -24,7 +24,7 @@ def process_video_file(video_path, output_path, max_count=51, fps=15):
         if not ret:
             break
 
-        if frame_idx >= 5:  # Skip first 5 frames
+        if frame_idx >= 5: 
             if has_hand_landmarks(frame, hands_detector):
                 valid_frames.append(frame)
         frame_idx += 1
@@ -36,7 +36,7 @@ def process_video_file(video_path, output_path, max_count=51, fps=15):
         print(f"No hand landmark frames in {video_path}")
         return
 
-    # Adjust frame count
+
     num_valid = len(valid_frames)
     if num_valid < max_count:
         last_frame = valid_frames[-1]
@@ -61,14 +61,13 @@ def process_all_videos(input_dir, output_dir, max_count=51):
             output_path = os.path.join(output_dir, f"{label}.mp4")
             process_video_file(video_path, output_path, max_count=max_count)
 
-# === CONFIGURATION ===
 cwd = os.getcwd()
 config_path = os.path.join(cwd,"PsychologyBot" ,"Config", "config.yaml")
 config = yaml.safe_load(open(config_path))
 datadir=cwd+config['CommonConfig']['DataDir']
-input_video_dir = datadir+"AlphabetDataset/INDIAN SIGN LANGUAGE ANIMATED VIDEOS /"    # Folder with input video files
-output_video_dir = datadir+"generated_videos/"  # Output folder
-max_count = 45                                # Fixed frame count per video
-# =====================
+input_video_dir = datadir+"AlphabetDataset/INDIAN SIGN LANGUAGE ANIMATED VIDEOS /" 
+output_video_dir = datadir+"generated_videos/" 
+max_count = 50                               
+
 
 process_all_videos(input_video_dir, output_video_dir, max_count)

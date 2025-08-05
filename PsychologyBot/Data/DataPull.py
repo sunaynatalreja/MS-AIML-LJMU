@@ -2,9 +2,7 @@ import os
 from kaggle.api.kaggle_api_extended import KaggleApi
 import subprocess
 
-# Set up Kaggle API credentials
 
-#Download Alphabet Dataset
 home = os.path.expanduser('~')
 os.environ["KAGGLE_CONFIG_DIR"] = home
 cwd = os.getcwd()
@@ -19,9 +17,9 @@ subprocess.call(unzip,shell=True)
 remove="rm "+save_dir+"*.zip"
 subprocess.call(remove,shell=True)
 
-#Download Conversation Dataset
+
 dataset_name = "kaggle datasets download thedevastator/nlp-mental-health-conversations"
-save_dir = cwd+"/PsychologyBot/Data/ChatDataset/"     # Replace with your desired save directory
+save_dir = cwd+"/PsychologyBot/Data/ChatDataset/"   
 subprocess.call("mkdir "+save_dir,shell=True)
 subprocess.call(dataset_name,shell=True)
 subprocess.call("mv nlp-mental-health-conversations.zip "+save_dir,shell=True)
@@ -32,14 +30,14 @@ subprocess.call(unzip,shell=True)
 remove="rm "+save_dir+"*.zip"
 subprocess.call(remove,shell=True)
 
-# Specify the directory to clean up
+
 target_dir = save_dir
 
-# Walk through the directory tree and remove empty directories
+
 for root, dirs, files in os.walk(target_dir, topdown=False):
     for dir_name in dirs:
         dir_path = os.path.join(root, dir_name)
-        if not os.listdir(dir_path):  # Check if the directory is empty
+        if not os.listdir(dir_path): 
             os.rmdir(dir_path)
             print(f"Removed empty directory: {dir_path}")
 

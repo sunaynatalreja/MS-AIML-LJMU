@@ -237,7 +237,7 @@
     });
 
     async function sendMessage(text) {
-      botResponse.innerHTML = 'Loading...';
+      botResponse.innerHTML = '';
       try {
         const res = await fetch('/chat', {
           method: 'POST',
