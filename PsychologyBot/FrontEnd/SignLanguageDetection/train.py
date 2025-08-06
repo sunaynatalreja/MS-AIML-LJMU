@@ -130,7 +130,6 @@ def evaluate(model, loader, device):
     criterion = nn.CrossEntropyLoss()
     all_preds = []
     all_labels = []
-    loss=0
     with torch.no_grad():
         for x, y in loader:
             x, y = x.to(device), y.to(device)
