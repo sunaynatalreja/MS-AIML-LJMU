@@ -1,0 +1,13 @@
+flask
+requests
+opencv-python
+mediapipe
+torch
+transformers
+numpy
+pandas
+scikit-learn
+nltk
+spacy
+jinja2
+matplotlib
