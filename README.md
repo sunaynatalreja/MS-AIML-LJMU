@@ -1,5 +1,5 @@
-# MS-AIML-LJMU  
-**Sign Language Psychology Bot**
+# Sign Language Psychologist 
+
 
 ## 🧠 Overview
 This project implements a chatbot avatar designed to support individuals with hearing impairments using sign language and psychology-driven conversational models.  
